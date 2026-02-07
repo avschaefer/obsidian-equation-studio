@@ -3,7 +3,7 @@
   "name": "Equation Studio",
   "version": "0.0.0",
   "minAppVersion": "0.15.0",
-  "description": "An enhanced visual LaTeX formula editor with modern Claude-inspired UI, quick templates, and improved UX",
+  "description": "A visual LaTeX formula editor with quick templates and virtual keyboard support",
   "author": "avschaefer",
   "authorUrl": "https://github.com/avschaefer",
   "isDesktopOnly": true
