@@ -200,37 +200,9 @@
     display: none;
 }
 
-/* Hide MathLive menu toggle, replaced by our settings button */
+/* MathLive menu toggle styling */
 .mathlive-mathfield::part(menu-toggle) {
-    display: none;
-}
-
-/* Settings Button (inside mathfield container) */
-.mathlive-settings-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
-    border: 1px solid var(--ml-border);
-    background: var(--ml-surface-elevated);
     color: var(--ml-text-muted);
-    border-radius: var(--ml-radius-sm);
-    cursor: pointer;
-    transition: var(--ml-transition);
-    z-index: 1;
-    line-height: 1;
-    padding: 0;
-}
-
-.mathlive-settings-btn:hover {
-    border-color: var(--ml-primary);
-    color: var(--ml-primary);
-    background: var(--ml-primary-light);
 }
 
 /* Quick Templates Strip */
@@ -456,7 +428,6 @@
 
 /* Focus states for accessibility */
 .mathlive-mode-btn:focus-visible,
-.mathlive-settings-btn:focus-visible,
 .mathlive-show-kb-btn:focus-visible,
 .mathlive-quick-btn:focus-visible,
 .mathlive-quick-hide-btn:focus-visible,

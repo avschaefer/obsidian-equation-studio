@@ -364,19 +364,6 @@ class MathLiveModal extends Modal {
             }
         });
         
-        // Settings button inside mathfield container (replaces MathLive menu toggle)
-        const settingsBtn = mathfieldContainer.createEl('button', {
-            text: '⚙',
-            cls: 'mathlive-settings-btn',
-            attr: { title: 'Equation Studio Settings' }
-        });
-
-        settingsBtn.addEventListener('click', () => {
-            this.close();
-            (this.app as any).setting.open();
-            (this.app as any).setting.openTabById(this.plugin.manifest.id);
-        });
-
         // "Show Keyboard" button below mathfield
         const showKbBtn = editorArea.createEl('button', {
             text: '⌨ Show Keyboard',

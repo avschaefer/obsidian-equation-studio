@@ -16208,16 +16208,6 @@ var MathLiveModal = class extends import_obsidian.Modal {
         this.mathfield.focus();
       }
     });
-    const settingsBtn = mathfieldContainer.createEl("button", {
-      text: "\u2699",
-      cls: "mathlive-settings-btn",
-      attr: { title: "Equation Studio Settings" }
-    });
-    settingsBtn.addEventListener("click", () => {
-      this.close();
-      this.app.setting.open();
-      this.app.setting.openTabById(this.plugin.manifest.id);
-    });
     const showKbBtn = editorArea.createEl("button", {
       text: "\u2328 Show Keyboard",
       cls: "mathlive-show-kb-btn"
