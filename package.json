@@ -1,6 +1,6 @@
 {
   "name": "equation-studio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Equation Studio - A visual LaTeX formula editor plugin for Obsidian",
   "repository": {
     "type": "git",

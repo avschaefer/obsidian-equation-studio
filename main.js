@@ -16341,6 +16341,13 @@ var MathLiveModal = class extends import_obsidian.Modal {
   onClose() {
     const { contentEl } = this;
     contentEl.empty();
+    try {
+      const kb = window.mathVirtualKeyboard;
+      if (kb && kb.visible) {
+        kb.hide();
+      }
+    } catch (e) {
+    }
     if (this.mathfield) {
       this.mathfield.remove();
       this.mathfield = null;

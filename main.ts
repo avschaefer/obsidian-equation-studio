@@ -540,6 +540,16 @@ class MathLiveModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
         
+        // Hide virtual keyboard if visible
+        try {
+            const kb = window.mathVirtualKeyboard;
+            if (kb && kb.visible) {
+                kb.hide();
+            }
+        } catch (e) {
+            // Keyboard not available, ignore
+        }
+        
         // Clean up mathfield
         if (this.mathfield) {
             this.mathfield.remove();
