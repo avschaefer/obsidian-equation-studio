@@ -161,7 +161,6 @@ class MathLiveModal extends Modal {
     mode: 'inline' | 'block';
     mathfield: MathfieldElement | null = null;
     initialLatex: string = '';
-    activeCategory: string = 'Calculus';
 
     constructor(app: App, plugin: MathLiveEnhancedPlugin, editor: Editor, mode: 'inline' | 'block') {
         super(app);
@@ -247,16 +246,10 @@ class MathLiveModal extends Modal {
             inlineBtn.removeClass('active');
         });
 
-        // Main content area
+        // Main content area (no sidebar)
         const mainContent = contentEl.createDiv({ cls: 'mathlive-main-content' });
         
-        // Left sidebar with templates (if enabled)
-        if (this.plugin.settings.showQuickTemplates) {
-            const sidebar = mainContent.createDiv({ cls: 'mathlive-sidebar' });
-            this.createTemplateSidebar(sidebar);
-        }
-        
-        // Editor area
+        // Editor area (full width)
         const editorArea = mainContent.createDiv({ cls: 'mathlive-editor-area' });
 
         // Quick templates (Basic & Greek) - always visible above mathfield
@@ -371,14 +364,26 @@ class MathLiveModal extends Modal {
             }
         });
         
-        // Settings button (virtual keyboard toggle) inside mathfield container
+        // Settings button inside mathfield container (replaces MathLive menu toggle)
         const settingsBtn = mathfieldContainer.createEl('button', {
             text: '⚙',
             cls: 'mathlive-settings-btn',
-            attr: { title: 'Toggle Virtual Keyboard' }
+            attr: { title: 'Equation Studio Settings' }
         });
 
         settingsBtn.addEventListener('click', () => {
+            this.close();
+            (this.app as any).setting.open();
+            (this.app as any).setting.openTabById(this.plugin.manifest.id);
+        });
+
+        // "Show Keyboard" button below mathfield
+        const showKbBtn = editorArea.createEl('button', {
+            text: '⌨ Show Keyboard',
+            cls: 'mathlive-show-kb-btn'
+        });
+
+        showKbBtn.addEventListener('click', () => {
             if (this.mathfield) {
                 this.mathfield.focus();
                 try {
@@ -386,32 +391,23 @@ class MathLiveModal extends Modal {
                     if (kb) {
                         if (kb.visible) {
                             kb.hide();
+                            showKbBtn.textContent = '⌨ Show Keyboard';
                         } else {
                             kb.show();
+                            showKbBtn.textContent = '⌨ Hide Keyboard';
                         }
                     }
                 } catch (e) {
-                    // Virtual keyboard may not be available in this environment
                     new Notice('Virtual keyboard is not available');
                 }
             }
         });
         
-        // LaTeX preview
-        const previewSection = editorArea.createDiv({ cls: 'mathlive-preview-section' });
-        previewSection.createEl('label', { text: 'LaTeX Output:', cls: 'mathlive-label' });
-        const latexPreview = previewSection.createEl('code', { 
-            cls: 'mathlive-latex-preview',
-            text: this.initialLatex || 'Your LaTeX will appear here...'
-        });
-        
-        // Update preview on input
-        this.mathfield.addEventListener('input', () => {
-            if (this.mathfield) {
-                latexPreview.textContent = this.mathfield.value || 'Your LaTeX will appear here...';
-            }
-        });
-        
+        // More Templates section (Calculus, Linear Algebra, Logic & Sets, Relations)
+        if (this.plugin.settings.showQuickTemplates) {
+            this.createMoreTemplates(editorArea);
+        }
+
         // Recent formulas section
         if (this.plugin.settings.recentFormulas.length > 0) {
             const recentSection = editorArea.createDiv({ cls: 'mathlive-recent-section' });
@@ -423,15 +419,13 @@ class MathLiveModal extends Modal {
                     cls: 'mathlive-recent-chip'
                 });
                 
-                // Render a small preview
-                const preview = document.createElement('math-span') as any;
+                const preview = document.createElement('span');
                 preview.textContent = formula.length > 20 ? formula.substring(0, 20) + '...' : formula;
                 chip.appendChild(preview);
                 
                 chip.addEventListener('click', () => {
                     if (this.mathfield) {
                         this.mathfield.value = formula;
-                        latexPreview.textContent = formula;
                     }
                 });
             });
@@ -455,7 +449,7 @@ class MathLiveModal extends Modal {
         
         // Keyboard shortcuts
         this.mathfield.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            if (e.key === 'Enter') {
                 e.preventDefault();
                 this.insertFormula();
             } else if (e.key === 'Escape') {
@@ -473,56 +467,48 @@ class MathLiveModal extends Modal {
         }, 300);
     }
 
-    createTemplateSidebar(container: HTMLElement) {
+    createMoreTemplates(container: HTMLElement) {
         const categories = Object.keys(QUICK_TEMPLATES).filter(c => c !== 'Basic' && c !== 'Greek');
         
-        // Category tabs
-        const tabs = container.createDiv({ cls: 'mathlive-template-tabs' });
+        const section = container.createDiv({ cls: 'mathlive-quick-templates' });
+        
+        const header = section.createDiv({ cls: 'mathlive-quick-header' });
+        header.createSpan({ text: 'More Templates', cls: 'mathlive-quick-title' });
+        const hideBtn = header.createEl('button', {
+            text: 'Hide',
+            cls: 'mathlive-quick-hide-btn'
+        });
+        
+        const body = section.createDiv({ cls: 'mathlive-quick-body' });
         
         categories.forEach(category => {
-            const tab = tabs.createEl('button', {
-                text: category,
-                cls: `mathlive-tab ${category === this.activeCategory ? 'active' : ''}`
-            });
+            const row = body.createDiv({ cls: 'mathlive-quick-row' });
+            row.createSpan({ text: category, cls: 'mathlive-quick-row-label' });
+            const btns = row.createDiv({ cls: 'mathlive-quick-btns' });
             
-            tab.addEventListener('click', () => {
-                this.activeCategory = category;
-                tabs.querySelectorAll('.mathlive-tab').forEach(t => t.removeClass('active'));
-                tab.addClass('active');
-                this.renderTemplates(container);
+            const templates = QUICK_TEMPLATES[category as keyof typeof QUICK_TEMPLATES];
+            templates.forEach(t => {
+                const btn = btns.createEl('button', {
+                    cls: 'mathlive-quick-btn',
+                    attr: { title: t.label }
+                });
+                btn.createSpan({ text: t.icon });
+                btn.addEventListener('click', () => {
+                    if (this.mathfield) {
+                        this.mathfield.insert(t.latex, {
+                            insertionMode: 'insertAfter',
+                            selectionMode: 'placeholder'
+                        });
+                        this.mathfield.focus();
+                    }
+                });
             });
         });
         
-        // Template grid
-        this.renderTemplates(container);
-    }
-
-    renderTemplates(container: HTMLElement) {
-        // Remove existing grid
-        const existingGrid = container.querySelector('.mathlive-template-grid');
-        if (existingGrid) existingGrid.remove();
-        
-        const grid = container.createDiv({ cls: 'mathlive-template-grid' });
-        const templates = QUICK_TEMPLATES[this.activeCategory as keyof typeof QUICK_TEMPLATES];
-        
-        templates.forEach(template => {
-            const btn = grid.createEl('button', {
-                cls: 'mathlive-template-btn',
-                attr: { title: template.label }
-            });
-            
-            btn.createSpan({ text: template.icon, cls: 'mathlive-template-icon' });
-            btn.createSpan({ text: template.label, cls: 'mathlive-template-label' });
-            
-            btn.addEventListener('click', () => {
-                if (this.mathfield) {
-                    this.mathfield.insert(template.latex, {
-                        insertionMode: 'insertAfter',
-                        selectionMode: 'placeholder'
-                    });
-                    this.mathfield.focus();
-                }
-            });
+        hideBtn.addEventListener('click', () => {
+            const isHidden = body.hasClass('is-hidden');
+            body.toggleClass('is-hidden', !isHidden);
+            hideBtn.textContent = isHidden ? 'Hide' : 'Show';
         });
     }
 

@@ -130,90 +130,27 @@
     overflow: hidden;
 }
 
-/* Sidebar */
-.mathlive-sidebar {
-    width: 200px;
-    min-width: 200px;
-    background: var(--ml-surface);
-    border-right: 1px solid var(--ml-border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.mathlive-template-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    padding: 12px;
-    border-bottom: 1px solid var(--ml-border);
-    background: var(--ml-background);
-}
-
-.mathlive-tab {
-    padding: 6px 10px;
-    font-size: 11px;
-    font-weight: 500;
-    border: none;
-    background: transparent;
-    color: var(--ml-text-muted);
-    border-radius: var(--ml-radius-sm);
-    cursor: pointer;
-    transition: var(--ml-transition);
-}
-
-.mathlive-tab:hover {
-    background: var(--ml-primary-light);
-    color: var(--ml-primary);
-}
-
-.mathlive-tab.active {
-    background: var(--ml-primary);
-    color: white;
-}
-
-.mathlive-template-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 12px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.mathlive-template-btn {
+/* Show Keyboard Button */
+.mathlive-show-kb-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
     font-size: 13px;
+    font-weight: 500;
     border: 1px solid var(--ml-border);
     background: var(--ml-surface-elevated);
-    color: var(--ml-text-primary);
-    border-radius: var(--ml-radius-sm);
+    color: var(--ml-text-secondary);
+    border-radius: var(--ml-radius-md);
     cursor: pointer;
     transition: var(--ml-transition);
-    text-align: left;
+    align-self: flex-start;
 }
 
-.mathlive-template-btn:hover {
+.mathlive-show-kb-btn:hover {
     border-color: var(--ml-primary);
-    background: var(--ml-primary-light);
-}
-
-.mathlive-template-icon {
-    font-size: 16px;
-    width: 24px;
-    text-align: center;
     color: var(--ml-primary);
-}
-
-.mathlive-template-label {
-    font-size: 12px;
-    color: var(--ml-text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* Editor Area */
@@ -251,24 +188,7 @@
     outline: none !important;
     pointer-events: auto !important;
     user-select: text !important;
-    /* Fix dark selection highlight - use lighter, readable colors */
-    --highlight-inactive: rgba(217, 119, 6, 0.15);
-    --highlight: rgba(217, 119, 6, 0.25);
     --caret-color: var(--ml-primary);
-    --selection-background-color-focused: rgba(217, 119, 6, 0.25);
-    --selection-background-color: rgba(217, 119, 6, 0.15);
-    --selection-color: var(--ml-text-primary);
-    --contains-highlight-background-color: rgba(217, 119, 6, 0.08);
-}
-
-.theme-dark .mathlive-mathfield {
-    --highlight-inactive: rgba(245, 158, 11, 0.2);
-    --highlight: rgba(245, 158, 11, 0.3);
-    --caret-color: var(--ml-primary);
-    --selection-background-color-focused: rgba(245, 158, 11, 0.3);
-    --selection-background-color: rgba(245, 158, 11, 0.2);
-    --selection-color: var(--ml-text-primary);
-    --contains-highlight-background-color: rgba(245, 158, 11, 0.12);
 }
 
 /* MathLive internal styling overrides */
@@ -277,6 +197,11 @@
 }
 
 .mathlive-mathfield::part(virtual-keyboard-toggle) {
+    display: none;
+}
+
+/* Hide MathLive menu toggle, replaced by our settings button */
+.mathlive-mathfield::part(menu-toggle) {
     display: none;
 }
 
@@ -370,7 +295,7 @@
     font-size: 11px;
     font-weight: 600;
     color: var(--ml-text-muted);
-    min-width: 38px;
+    white-space: nowrap;
 }
 
 .mathlive-quick-btns {
@@ -401,32 +326,13 @@
     color: var(--ml-primary);
 }
 
-/* Preview Section */
-.mathlive-preview-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+/* Label */
 .mathlive-label {
     font-size: 12px;
     font-weight: 600;
     color: var(--ml-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-}
-
-.mathlive-latex-preview {
-    display: block;
-    padding: 12px 16px;
-    background: var(--ml-surface);
-    border: 1px solid var(--ml-border);
-    border-radius: var(--ml-radius-md);
-    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
-    font-size: 13px;
-    color: var(--ml-text-primary);
-    word-break: break-all;
-    min-height: 44px;
 }
 
 /* Recent Formulas */
@@ -524,10 +430,6 @@
         max-width: none !important;
     }
     
-    .mathlive-sidebar {
-        display: none;
-    }
-    
     .mathlive-title-row {
         flex-direction: column;
         align-items: stretch;
@@ -554,9 +456,8 @@
 
 /* Focus states for accessibility */
 .mathlive-mode-btn:focus-visible,
-.mathlive-tab:focus-visible,
-.mathlive-template-btn:focus-visible,
 .mathlive-settings-btn:focus-visible,
+.mathlive-show-kb-btn:focus-visible,
 .mathlive-quick-btn:focus-visible,
 .mathlive-quick-hide-btn:focus-visible,
 .mathlive-recent-chip:focus-visible,
@@ -566,23 +467,19 @@
 }
 
 /* Scrollbar styling */
-.mathlive-template-grid::-webkit-scrollbar,
 .mathlive-editor-area::-webkit-scrollbar {
     width: 6px;
 }
 
-.mathlive-template-grid::-webkit-scrollbar-track,
 .mathlive-editor-area::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.mathlive-template-grid::-webkit-scrollbar-thumb,
 .mathlive-editor-area::-webkit-scrollbar-thumb {
     background: var(--ml-border);
     border-radius: 3px;
 }
 
-.mathlive-template-grid::-webkit-scrollbar-thumb:hover,
 .mathlive-editor-area::-webkit-scrollbar-thumb:hover {
     background: var(--ml-text-muted);
 }

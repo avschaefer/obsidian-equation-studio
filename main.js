@@ -16065,7 +16065,6 @@ var MathLiveModal = class extends import_obsidian.Modal {
     super(app);
     this.mathfield = null;
     this.initialLatex = "";
-    this.activeCategory = "Calculus";
     this.plugin = plugin;
     this.editor = editor;
     this.mode = mode;
@@ -16126,10 +16125,6 @@ var MathLiveModal = class extends import_obsidian.Modal {
       inlineBtn.removeClass("active");
     });
     const mainContent = contentEl.createDiv({ cls: "mathlive-main-content" });
-    if (this.plugin.settings.showQuickTemplates) {
-      const sidebar = mainContent.createDiv({ cls: "mathlive-sidebar" });
-      this.createTemplateSidebar(sidebar);
-    }
     const editorArea = mainContent.createDiv({ cls: "mathlive-editor-area" });
     const quickTemplatesSection = editorArea.createDiv({ cls: "mathlive-quick-templates" });
     const quickHeader = quickTemplatesSection.createDiv({ cls: "mathlive-quick-header" });
@@ -16216,9 +16211,18 @@ var MathLiveModal = class extends import_obsidian.Modal {
     const settingsBtn = mathfieldContainer.createEl("button", {
       text: "\u2699",
       cls: "mathlive-settings-btn",
-      attr: { title: "Toggle Virtual Keyboard" }
+      attr: { title: "Equation Studio Settings" }
     });
     settingsBtn.addEventListener("click", () => {
+      this.close();
+      this.app.setting.open();
+      this.app.setting.openTabById(this.plugin.manifest.id);
+    });
+    const showKbBtn = editorArea.createEl("button", {
+      text: "\u2328 Show Keyboard",
+      cls: "mathlive-show-kb-btn"
+    });
+    showKbBtn.addEventListener("click", () => {
       if (this.mathfield) {
         this.mathfield.focus();
         try {
@@ -16226,8 +16230,10 @@ var MathLiveModal = class extends import_obsidian.Modal {
           if (kb) {
             if (kb.visible) {
               kb.hide();
+              showKbBtn.textContent = "\u2328 Show Keyboard";
             } else {
               kb.show();
+              showKbBtn.textContent = "\u2328 Hide Keyboard";
             }
           }
         } catch (e) {
@@ -16235,17 +16241,9 @@ var MathLiveModal = class extends import_obsidian.Modal {
         }
       }
     });
-    const previewSection = editorArea.createDiv({ cls: "mathlive-preview-section" });
-    previewSection.createEl("label", { text: "LaTeX Output:", cls: "mathlive-label" });
-    const latexPreview = previewSection.createEl("code", {
-      cls: "mathlive-latex-preview",
-      text: this.initialLatex || "Your LaTeX will appear here..."
-    });
-    this.mathfield.addEventListener("input", () => {
-      if (this.mathfield) {
-        latexPreview.textContent = this.mathfield.value || "Your LaTeX will appear here...";
-      }
-    });
+    if (this.plugin.settings.showQuickTemplates) {
+      this.createMoreTemplates(editorArea);
+    }
     if (this.plugin.settings.recentFormulas.length > 0) {
       const recentSection = editorArea.createDiv({ cls: "mathlive-recent-section" });
       recentSection.createEl("label", { text: "Recent Formulas:", cls: "mathlive-label" });
@@ -16254,13 +16252,12 @@ var MathLiveModal = class extends import_obsidian.Modal {
         const chip = recentList.createEl("button", {
           cls: "mathlive-recent-chip"
         });
-        const preview = document.createElement("math-span");
+        const preview = document.createElement("span");
         preview.textContent = formula.length > 20 ? formula.substring(0, 20) + "..." : formula;
         chip.appendChild(preview);
         chip.addEventListener("click", () => {
           if (this.mathfield) {
             this.mathfield.value = formula;
-            latexPreview.textContent = formula;
           }
         });
       });
@@ -16277,7 +16274,7 @@ var MathLiveModal = class extends import_obsidian.Modal {
     cancelBtn.addEventListener("click", () => this.close());
     insertBtn.addEventListener("click", () => this.insertFormula());
     this.mathfield.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "Enter") {
         e.preventDefault();
         this.insertFormula();
       } else if (e.key === "Escape") {
@@ -16292,45 +16289,42 @@ var MathLiveModal = class extends import_obsidian.Modal {
       }
     }, 300);
   }
-  createTemplateSidebar(container) {
+  createMoreTemplates(container) {
     const categories = Object.keys(QUICK_TEMPLATES).filter((c) => c !== "Basic" && c !== "Greek");
-    const tabs = container.createDiv({ cls: "mathlive-template-tabs" });
+    const section = container.createDiv({ cls: "mathlive-quick-templates" });
+    const header = section.createDiv({ cls: "mathlive-quick-header" });
+    header.createSpan({ text: "More Templates", cls: "mathlive-quick-title" });
+    const hideBtn = header.createEl("button", {
+      text: "Hide",
+      cls: "mathlive-quick-hide-btn"
+    });
+    const body = section.createDiv({ cls: "mathlive-quick-body" });
     categories.forEach((category) => {
-      const tab = tabs.createEl("button", {
-        text: category,
-        cls: `mathlive-tab ${category === this.activeCategory ? "active" : ""}`
-      });
-      tab.addEventListener("click", () => {
-        this.activeCategory = category;
-        tabs.querySelectorAll(".mathlive-tab").forEach((t37) => t37.removeClass("active"));
-        tab.addClass("active");
-        this.renderTemplates(container);
+      const row = body.createDiv({ cls: "mathlive-quick-row" });
+      row.createSpan({ text: category, cls: "mathlive-quick-row-label" });
+      const btns = row.createDiv({ cls: "mathlive-quick-btns" });
+      const templates = QUICK_TEMPLATES[category];
+      templates.forEach((t37) => {
+        const btn = btns.createEl("button", {
+          cls: "mathlive-quick-btn",
+          attr: { title: t37.label }
+        });
+        btn.createSpan({ text: t37.icon });
+        btn.addEventListener("click", () => {
+          if (this.mathfield) {
+            this.mathfield.insert(t37.latex, {
+              insertionMode: "insertAfter",
+              selectionMode: "placeholder"
+            });
+            this.mathfield.focus();
+          }
+        });
       });
     });
-    this.renderTemplates(container);
-  }
-  renderTemplates(container) {
-    const existingGrid = container.querySelector(".mathlive-template-grid");
-    if (existingGrid)
-      existingGrid.remove();
-    const grid = container.createDiv({ cls: "mathlive-template-grid" });
-    const templates = QUICK_TEMPLATES[this.activeCategory];
-    templates.forEach((template) => {
-      const btn = grid.createEl("button", {
-        cls: "mathlive-template-btn",
-        attr: { title: template.label }
-      });
-      btn.createSpan({ text: template.icon, cls: "mathlive-template-icon" });
-      btn.createSpan({ text: template.label, cls: "mathlive-template-label" });
-      btn.addEventListener("click", () => {
-        if (this.mathfield) {
-          this.mathfield.insert(template.latex, {
-            insertionMode: "insertAfter",
-            selectionMode: "placeholder"
-          });
-          this.mathfield.focus();
-        }
-      });
+    hideBtn.addEventListener("click", () => {
+      const isHidden = body.hasClass("is-hidden");
+      body.toggleClass("is-hidden", !isHidden);
+      hideBtn.textContent = isHidden ? "Hide" : "Show";
     });
   }
   insertFormula() {
