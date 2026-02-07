@@ -1,0 +1,10 @@
+{
+  "id": "equation-studio",
+  "name": "Equation Studio",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "An enhanced visual LaTeX formula editor with modern Claude-inspired UI, quick templates, and improved UX",
+  "author": "avschaefer",
+  "authorUrl": "https://github.com/avschaefer",
+  "isDesktopOnly": true
+}

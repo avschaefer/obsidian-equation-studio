@@ -1,0 +1,588 @@
+/* 
+ * MathLive Enhanced - Claude-Inspired Theme
+ * A modern, clean design inspired by Claude's aesthetic
+ */
+
+/* CSS Variables for theming */
+:root {
+    --ml-primary: #D97706;
+    --ml-primary-hover: #B45309;
+    --ml-primary-light: #FEF3C7;
+    --ml-secondary: #6B7280;
+    --ml-secondary-hover: #4B5563;
+    --ml-background: #FFFFFF;
+    --ml-surface: #F9FAFB;
+    --ml-surface-elevated: #FFFFFF;
+    --ml-border: #E5E7EB;
+    --ml-border-focus: #D97706;
+    --ml-text-primary: #111827;
+    --ml-text-secondary: #6B7280;
+    --ml-text-muted: #9CA3AF;
+    --ml-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --ml-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --ml-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --ml-radius-sm: 6px;
+    --ml-radius-md: 8px;
+    --ml-radius-lg: 12px;
+    --ml-transition: all 0.15s ease;
+}
+
+/* Dark theme */
+.theme-dark {
+    --ml-primary: #F59E0B;
+    --ml-primary-hover: #FBBF24;
+    --ml-primary-light: rgba(245, 158, 11, 0.15);
+    --ml-secondary: #9CA3AF;
+    --ml-secondary-hover: #D1D5DB;
+    --ml-background: #1F2937;
+    --ml-surface: #111827;
+    --ml-surface-elevated: #374151;
+    --ml-border: #374151;
+    --ml-border-focus: #F59E0B;
+    --ml-text-primary: #F9FAFB;
+    --ml-text-secondary: #D1D5DB;
+    --ml-text-muted: #6B7280;
+    --ml-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --ml-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --ml-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+}
+
+/* Modal Styling */
+.mathlive-enhanced-modal {
+    max-width: 900px !important;
+    width: 90vw !important;
+    max-height: 85vh !important;
+}
+
+.mathlive-enhanced-modal .modal-content {
+    padding: 0 !important;
+    background: var(--ml-background);
+    border-radius: var(--ml-radius-lg);
+    overflow: hidden;
+}
+
+.mathlive-enhanced-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--ml-background);
+}
+
+/* Header */
+.mathlive-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--ml-border);
+    background: var(--ml-surface);
+}
+
+.mathlive-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.mathlive-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ml-text-primary);
+    letter-spacing: -0.02em;
+}
+
+/* Mode Toggle */
+.mathlive-mode-toggle {
+    display: flex;
+    background: var(--ml-border);
+    border-radius: var(--ml-radius-md);
+    padding: 3px;
+    gap: 2px;
+}
+
+.mathlive-mode-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--ml-text-secondary);
+    border-radius: var(--ml-radius-sm);
+    cursor: pointer;
+    transition: var(--ml-transition);
+}
+
+.mathlive-mode-btn:hover {
+    color: var(--ml-text-primary);
+}
+
+.mathlive-mode-btn.active {
+    background: var(--ml-surface-elevated);
+    color: var(--ml-text-primary);
+    box-shadow: var(--ml-shadow-sm);
+}
+
+/* Main Content Layout */
+.mathlive-main-content {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.mathlive-sidebar {
+    width: 200px;
+    min-width: 200px;
+    background: var(--ml-surface);
+    border-right: 1px solid var(--ml-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mathlive-template-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 12px;
+    border-bottom: 1px solid var(--ml-border);
+    background: var(--ml-background);
+}
+
+.mathlive-tab {
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--ml-text-muted);
+    border-radius: var(--ml-radius-sm);
+    cursor: pointer;
+    transition: var(--ml-transition);
+}
+
+.mathlive-tab:hover {
+    background: var(--ml-primary-light);
+    color: var(--ml-primary);
+}
+
+.mathlive-tab.active {
+    background: var(--ml-primary);
+    color: white;
+}
+
+.mathlive-template-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 12px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.mathlive-template-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    border: 1px solid var(--ml-border);
+    background: var(--ml-surface-elevated);
+    color: var(--ml-text-primary);
+    border-radius: var(--ml-radius-sm);
+    cursor: pointer;
+    transition: var(--ml-transition);
+    text-align: left;
+}
+
+.mathlive-template-btn:hover {
+    border-color: var(--ml-primary);
+    background: var(--ml-primary-light);
+}
+
+.mathlive-template-icon {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+    color: var(--ml-primary);
+}
+
+.mathlive-template-label {
+    font-size: 12px;
+    color: var(--ml-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Editor Area */
+.mathlive-editor-area {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    background: var(--ml-background);
+}
+
+/* Mathfield Container */
+.mathlive-mathfield-container {
+    position: relative;
+    background: var(--ml-surface);
+    border: 2px solid var(--ml-border);
+    border-radius: var(--ml-radius-lg);
+    padding: 20px;
+    min-height: 120px;
+    transition: var(--ml-transition);
+}
+
+.mathlive-mathfield-container:focus-within {
+    border-color: var(--ml-border-focus);
+    box-shadow: 0 0 0 3px var(--ml-primary-light);
+}
+
+.mathlive-mathfield {
+    width: 100%;
+    min-height: 80px;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    pointer-events: auto !important;
+    user-select: text !important;
+    /* Fix dark selection highlight - use lighter, readable colors */
+    --highlight-inactive: rgba(217, 119, 6, 0.15);
+    --highlight: rgba(217, 119, 6, 0.25);
+    --caret-color: var(--ml-primary);
+    --selection-background-color-focused: rgba(217, 119, 6, 0.25);
+    --selection-background-color: rgba(217, 119, 6, 0.15);
+    --selection-color: var(--ml-text-primary);
+    --contains-highlight-background-color: rgba(217, 119, 6, 0.08);
+}
+
+.theme-dark .mathlive-mathfield {
+    --highlight-inactive: rgba(245, 158, 11, 0.2);
+    --highlight: rgba(245, 158, 11, 0.3);
+    --caret-color: var(--ml-primary);
+    --selection-background-color-focused: rgba(245, 158, 11, 0.3);
+    --selection-background-color: rgba(245, 158, 11, 0.2);
+    --selection-color: var(--ml-text-primary);
+    --contains-highlight-background-color: rgba(245, 158, 11, 0.12);
+}
+
+/* MathLive internal styling overrides */
+.mathlive-mathfield::part(content) {
+    padding: 8px 0;
+}
+
+.mathlive-mathfield::part(virtual-keyboard-toggle) {
+    display: none;
+}
+
+/* Settings Button (inside mathfield container) */
+.mathlive-settings-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    border: 1px solid var(--ml-border);
+    background: var(--ml-surface-elevated);
+    color: var(--ml-text-muted);
+    border-radius: var(--ml-radius-sm);
+    cursor: pointer;
+    transition: var(--ml-transition);
+    z-index: 1;
+    line-height: 1;
+    padding: 0;
+}
+
+.mathlive-settings-btn:hover {
+    border-color: var(--ml-primary);
+    color: var(--ml-primary);
+    background: var(--ml-primary-light);
+}
+
+/* Quick Templates Strip */
+.mathlive-quick-templates {
+    border: 1px solid var(--ml-border);
+    border-radius: var(--ml-radius-md);
+    background: var(--ml-surface);
+    overflow: hidden;
+}
+
+.mathlive-quick-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--ml-border);
+    background: var(--ml-surface);
+}
+
+.mathlive-quick-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ml-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mathlive-quick-hide-btn {
+    font-size: 11px;
+    padding: 2px 8px;
+    border: 1px solid var(--ml-border);
+    background: var(--ml-surface-elevated);
+    color: var(--ml-text-muted);
+    border-radius: var(--ml-radius-sm);
+    cursor: pointer;
+    transition: var(--ml-transition);
+}
+
+.mathlive-quick-hide-btn:hover {
+    color: var(--ml-text-primary);
+    border-color: var(--ml-primary);
+}
+
+.mathlive-quick-body {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mathlive-quick-body.is-hidden {
+    display: none;
+}
+
+.mathlive-quick-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mathlive-quick-row-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ml-text-muted);
+    min-width: 38px;
+}
+
+.mathlive-quick-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.mathlive-quick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border: 1px solid var(--ml-border);
+    background: var(--ml-surface-elevated);
+    color: var(--ml-text-primary);
+    border-radius: var(--ml-radius-sm);
+    cursor: pointer;
+    transition: var(--ml-transition);
+    padding: 0;
+}
+
+.mathlive-quick-btn:hover {
+    border-color: var(--ml-primary);
+    background: var(--ml-primary-light);
+    color: var(--ml-primary);
+}
+
+/* Preview Section */
+.mathlive-preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mathlive-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ml-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mathlive-latex-preview {
+    display: block;
+    padding: 12px 16px;
+    background: var(--ml-surface);
+    border: 1px solid var(--ml-border);
+    border-radius: var(--ml-radius-md);
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--ml-text-primary);
+    word-break: break-all;
+    min-height: 44px;
+}
+
+/* Recent Formulas */
+.mathlive-recent-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mathlive-recent-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mathlive-recent-chip {
+    padding: 6px 12px;
+    font-size: 12px;
+    border: 1px solid var(--ml-border);
+    background: var(--ml-surface-elevated);
+    color: var(--ml-text-secondary);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--ml-transition);
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mathlive-recent-chip:hover {
+    border-color: var(--ml-primary);
+    background: var(--ml-primary-light);
+    color: var(--ml-primary);
+}
+
+/* Action Buttons */
+.mathlive-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--ml-border);
+    background: var(--ml-surface);
+}
+
+.mathlive-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--ml-radius-md);
+    cursor: pointer;
+    transition: var(--ml-transition);
+    border: none;
+}
+
+.mathlive-btn-primary {
+    background: var(--ml-primary);
+    color: white;
+}
+
+.mathlive-btn-primary:hover {
+    background: var(--ml-primary-hover);
+}
+
+.mathlive-btn-secondary {
+    background: transparent;
+    color: var(--ml-text-secondary);
+    border: 1px solid var(--ml-border);
+}
+
+.mathlive-btn-secondary:hover {
+    background: var(--ml-surface);
+    color: var(--ml-text-primary);
+}
+
+/* Virtual Keyboard Styling */
+.ML__keyboard {
+    --keyboard-background: var(--ml-surface) !important;
+    --keyboard-border: var(--ml-border) !important;
+    --keycap-background: var(--ml-surface-elevated) !important;
+    --keycap-border: var(--ml-border) !important;
+    --keycap-text: var(--ml-text-primary) !important;
+    --keycap-text-active: var(--ml-primary) !important;
+    --keycap-background-hover: var(--ml-primary-light) !important;
+    --keycap-background-active: var(--ml-primary) !important;
+    border-radius: var(--ml-radius-lg) !important;
+    box-shadow: var(--ml-shadow-lg) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mathlive-enhanced-modal {
+        width: 95vw !important;
+        max-width: none !important;
+    }
+    
+    .mathlive-sidebar {
+        display: none;
+    }
+    
+    .mathlive-title-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .mathlive-mode-toggle {
+        justify-content: center;
+    }
+    
+    .mathlive-editor-area {
+        padding: 16px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mathlive-enhanced-modal {
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Focus states for accessibility */
+.mathlive-mode-btn:focus-visible,
+.mathlive-tab:focus-visible,
+.mathlive-template-btn:focus-visible,
+.mathlive-settings-btn:focus-visible,
+.mathlive-quick-btn:focus-visible,
+.mathlive-quick-hide-btn:focus-visible,
+.mathlive-recent-chip:focus-visible,
+.mathlive-btn:focus-visible {
+    outline: 2px solid var(--ml-primary);
+    outline-offset: 2px;
+}
+
+/* Scrollbar styling */
+.mathlive-template-grid::-webkit-scrollbar,
+.mathlive-editor-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mathlive-template-grid::-webkit-scrollbar-track,
+.mathlive-editor-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mathlive-template-grid::-webkit-scrollbar-thumb,
+.mathlive-editor-area::-webkit-scrollbar-thumb {
+    background: var(--ml-border);
+    border-radius: 3px;
+}
+
+.mathlive-template-grid::-webkit-scrollbar-thumb:hover,
+.mathlive-editor-area::-webkit-scrollbar-thumb:hover {
+    background: var(--ml-text-muted);
+}

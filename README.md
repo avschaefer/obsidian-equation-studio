@@ -1,9 +1,10 @@
-# MathLive Enhanced - Obsidian Plugin
+# Equation Studio - Obsidian Plugin
 
 An enhanced visual LaTeX formula editor for Obsidian with a modern Claude-inspired UI, quick templates, and improved user experience.
 
-![MathLive Enhanced](https://img.shields.io/badge/Obsidian-Plugin-7C3AED?style=for-the-badge)
+![Equation Studio](https://img.shields.io/badge/Obsidian-Plugin-7C3AED?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-1.0.0-D97706?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/avschaefer/obsidian-equation-studio?style=for-the-badge)
 
 ## ✨ Features
 
@@ -40,15 +41,15 @@ Categorized template sidebar with 40+ common formulas:
 ### From Community Plugins (Recommended)
 1. Open Obsidian Settings
 2. Navigate to Community Plugins
-3. Search for "equations-ui"
+3. Search for "Equation Studio"
 4. Click Install, then Enable
 
 ### Manual Installation (For Development/Testing)
 
 1. **Clone or download this repository**:
    ```bash
-   git clone https://github.com/your-repo/obsidian-mathlive-enhanced.git
-   cd obsidian-mathlive-enhanced
+   git clone https://github.com/avschaefer/obsidian-equation-studio.git
+   cd obsidian-equation-studio
    ```
 
 2. **Install dependencies**:
@@ -64,16 +65,16 @@ Categorized template sidebar with 40+ common formulas:
 4. **Copy to your Obsidian vault**:
    ```bash
    # Create the plugin directory in your vault
-   mkdir -p /path/to/your/vault/.obsidian/plugins/mathlive-enhanced
+   mkdir -p /path/to/your/vault/.obsidian/plugins/equation-studio
    
    # Copy the required files
-   cp main.js manifest.json styles.css /path/to/your/vault/.obsidian/plugins/mathlive-enhanced/
+   cp main.js manifest.json styles.css /path/to/your/vault/.obsidian/plugins/equation-studio/
    ```
 
 5. **Enable the plugin**:
    - Open Obsidian
    - Go to Settings → Community Plugins
-   - Find "MathLive Enhanced" and enable it
+   - Find "Equation Studio" and enable it
 
 ### Development Mode
 
@@ -96,7 +97,7 @@ This will watch for changes and automatically rebuild `main.js`.
 
 ## 🎛️ Settings
 
-Access settings via Obsidian Settings → MathLive Enhanced:
+Access settings via Obsidian Settings → Equation Studio:
 
 - **Default Mode**: Choose inline or block as default
 - **Quick Templates**: Show/hide template sidebar
@@ -125,7 +126,7 @@ Access settings via Obsidian Settings → MathLive Enhanced:
 3. Continue typing to complete the formula
 
 ### Virtual Keyboard
-- Click "⌨️ Toggle Keyboard" to show/hide
+- Click the settings icon (⚙) in the mathfield to toggle the virtual keyboard
 - The keyboard provides specialized math input buttons
 - Particularly useful on touch devices
 
@@ -141,7 +142,7 @@ Access settings via Obsidian Settings → MathLive Enhanced:
 
 ### File Structure
 ```
-obsidian-mathlive-enhanced/
+obsidian-equation-studio/
 ├── main.ts           # Plugin source code
 ├── styles.css        # Claude-inspired styles
 ├── manifest.json     # Plugin metadata
@@ -176,7 +177,11 @@ MIT License - feel free to use, modify, and distribute.
 - [MathLive](https://cortexjs.io/mathlive/) library by arnog
 - Design inspired by [Claude](https://claude.ai) by Anthropic
 
+## 📦 Repository
+
+- **GitHub**: [https://github.com/avschaefer/obsidian-equation-studio](https://github.com/avschaefer/obsidian-equation-studio)
+- **Author**: [avschaefer](https://github.com/avschaefer)
+
 ---
 
 Made with ❤️ for the Obsidian community
-# obsidian-equation-studio
