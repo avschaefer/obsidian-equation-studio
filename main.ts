@@ -80,7 +80,7 @@ const QUICK_TEMPLATES = {
         { label: 'Iff', latex: '\\Leftrightarrow', icon: '⇔' },
     ],
     'Relations': [
-        { label: 'Not Equal', latex: '\\neq', icon: '≠' },
+        { label: 'Not Equal', latex: 'a \\neq b', icon: '≠' },
         { label: 'Approx', latex: '\\approx', icon: '≈' },
         { label: 'Less/Equal', latex: '\\leq', icon: '≤' },
         { label: 'Greater/Equal', latex: '\\geq', icon: '≥' },
