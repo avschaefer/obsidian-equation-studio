@@ -19,9 +19,10 @@ interface MathLiveEnhancedSettings {
     virtualKeyboardMode: 'auto' | 'manual' | 'onfocus';
     soundEnabled: boolean;
     recentFormulas: string[];
-    maxRecentFormulas: number;
     fontSize: 'small' | 'medium' | 'large';
 }
+
+const MAX_RECENT_FORMULAS = 10;
 
 const DEFAULT_SETTINGS: MathLiveEnhancedSettings = {
     defaultMode: 'inline',
@@ -29,7 +30,6 @@ const DEFAULT_SETTINGS: MathLiveEnhancedSettings = {
     virtualKeyboardMode: 'onfocus',
     soundEnabled: false,
     recentFormulas: [],
-    maxRecentFormulas: 10,
     fontSize: 'medium'
 };
 
@@ -96,6 +96,10 @@ export default class MathLiveEnhancedPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'main.ts:onload',message:'Plugin loaded',data:{settings:this.settings},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+
         // Add command for inline math
         this.addCommand({
             id: 'insert-inline-math',
@@ -129,6 +133,18 @@ export default class MathLiveEnhancedPlugin extends Plugin {
         this.addSettingTab(new MathLiveEnhancedSettingTab(this.app, this));
     }
 
+    onunload() {
+        // Hide virtual keyboard on plugin unload
+        try {
+            const kb = window.mathVirtualKeyboard;
+            if (kb && kb.visible) {
+                kb.hide();
+            }
+        } catch (e) {
+            // Keyboard not available, ignore
+        }
+    }
+
     async loadSettings() {
         this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     }
@@ -147,8 +163,8 @@ export default class MathLiveEnhancedPlugin extends Plugin {
         this.settings.recentFormulas.unshift(latex);
         
         // Trim to max
-        if (this.settings.recentFormulas.length > this.settings.maxRecentFormulas) {
-            this.settings.recentFormulas = this.settings.recentFormulas.slice(0, this.settings.maxRecentFormulas);
+        if (this.settings.recentFormulas.length > MAX_RECENT_FORMULAS) {
+            this.settings.recentFormulas = this.settings.recentFormulas.slice(0, MAX_RECENT_FORMULAS);
         }
         
         this.saveSettings();
@@ -175,20 +191,9 @@ class MathLiveModal extends Modal {
     getExistingMath(): string {
         const cursor = this.editor.getCursor();
         const line = this.editor.getLine(cursor.line);
-        
-        // Check for inline math $...$
-        const inlineRegex = /\$([^$]+)\$/g;
         let match;
-        while ((match = inlineRegex.exec(line)) !== null) {
-            const start = match.index;
-            const end = start + match[0].length;
-            if (cursor.ch >= start && cursor.ch <= end) {
-                this.mode = 'inline';
-                return match[1];
-            }
-        }
         
-        // Check for block math $$...$$
+        // Check for block math $$...$$ first (before inline, to avoid partial matches)
         const blockRegex = /\$\$([^$]+)\$\$/g;
         while ((match = blockRegex.exec(line)) !== null) {
             const start = match.index;
@@ -199,16 +204,30 @@ class MathLiveModal extends Modal {
             }
         }
         
+        // Check for inline math $...$
+        const inlineRegex = /(?<!\$)\$(?!\$)([^$]+)\$(?!\$)/g;
+        while ((match = inlineRegex.exec(line)) !== null) {
+            const start = match.index;
+            const end = start + match[0].length;
+            if (cursor.ch >= start && cursor.ch <= end) {
+                this.mode = 'inline';
+                return match[1];
+            }
+        }
+        
         return '';
     }
 
     onOpen() {
         const { contentEl, modalEl } = this;
+
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'main.ts:MathLiveModal.onOpen',message:'Modal opened',data:{mode:this.mode,initialLatex:this.initialLatex},timestamp:Date.now(),hypothesisId:'B'})}).catch(()=>{});
+        // #endregion
         
         // Add custom class for styling
         modalEl.addClass('mathlive-enhanced-modal');
         
-        // Main container with Claude-inspired design
         contentEl.empty();
         contentEl.addClass('mathlive-enhanced-container');
         
@@ -351,6 +370,9 @@ class MathLiveModal extends Modal {
 
         // Listen for mount event for reliable initialization
         this.mathfield.addEventListener('mount', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'main.ts:mathfield.mount',message:'Mathfield mounted',data:{hasValue:!!this.mathfield?.value},timestamp:Date.now(),hypothesisId:'E'})}).catch(()=>{});
+            // #endregion
             if (this.mathfield) {
                 this.mathfield.smartMode = true;
                 this.mathfield.smartFence = true;
@@ -503,6 +525,8 @@ class MathLiveModal extends Modal {
         if (!this.mathfield) return;
         
         const latex = this.mathfield.value;
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'main.ts:insertFormula',message:'Inserting formula',data:{latex,mode:this.mode,isEdit:!!this.initialLatex},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
         if (!latex.trim()) {
             new Notice('Please enter a formula');
             return;
@@ -537,6 +561,10 @@ class MathLiveModal extends Modal {
     }
 
     onClose() {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'main.ts:onClose',message:'Modal closing',data:{mathfieldExists:!!this.mathfield},timestamp:Date.now(),hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+
         const { contentEl } = this;
         contentEl.empty();
         
@@ -586,7 +614,7 @@ class MathLiveEnhancedSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Show quick templates')
-            .setDesc('Display template sidebar with common formulas')
+            .setDesc('Show additional template categories (Calculus, Linear Algebra, etc.)')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.showQuickTemplates)
                 .onChange(async (value) => {

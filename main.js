@@ -15951,13 +15951,13 @@ function zt() {
 }
 
 // main.ts
+var MAX_RECENT_FORMULAS = 10;
 var DEFAULT_SETTINGS = {
   defaultMode: "inline",
   showQuickTemplates: true,
   virtualKeyboardMode: "onfocus",
   soundEnabled: false,
   recentFormulas: [],
-  maxRecentFormulas: 10,
   fontSize: "medium"
 };
 var QUICK_TEMPLATES = {
@@ -16018,6 +16018,8 @@ var QUICK_TEMPLATES = {
 var MathLiveEnhancedPlugin = class extends import_obsidian.Plugin {
   async onload() {
     await this.loadSettings();
+    fetch("http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ location: "main.ts:onload", message: "Plugin loaded", data: { settings: this.settings }, timestamp: Date.now(), hypothesisId: "A" }) }).catch(() => {
+    });
     this.addCommand({
       id: "insert-inline-math",
       name: "Insert inline math formula",
@@ -16043,6 +16045,15 @@ var MathLiveEnhancedPlugin = class extends import_obsidian.Plugin {
     });
     this.addSettingTab(new MathLiveEnhancedSettingTab(this.app, this));
   }
+  onunload() {
+    try {
+      const kb = window.mathVirtualKeyboard;
+      if (kb && kb.visible) {
+        kb.hide();
+      }
+    } catch (e) {
+    }
+  }
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   }
@@ -16054,8 +16065,8 @@ var MathLiveEnhancedPlugin = class extends import_obsidian.Plugin {
       return;
     this.settings.recentFormulas = this.settings.recentFormulas.filter((f2) => f2 !== latex);
     this.settings.recentFormulas.unshift(latex);
-    if (this.settings.recentFormulas.length > this.settings.maxRecentFormulas) {
-      this.settings.recentFormulas = this.settings.recentFormulas.slice(0, this.settings.maxRecentFormulas);
+    if (this.settings.recentFormulas.length > MAX_RECENT_FORMULAS) {
+      this.settings.recentFormulas = this.settings.recentFormulas.slice(0, MAX_RECENT_FORMULAS);
     }
     this.saveSettings();
   }
@@ -16073,16 +16084,7 @@ var MathLiveModal = class extends import_obsidian.Modal {
   getExistingMath() {
     const cursor = this.editor.getCursor();
     const line = this.editor.getLine(cursor.line);
-    const inlineRegex = /\$([^$]+)\$/g;
     let match;
-    while ((match = inlineRegex.exec(line)) !== null) {
-      const start = match.index;
-      const end = start + match[0].length;
-      if (cursor.ch >= start && cursor.ch <= end) {
-        this.mode = "inline";
-        return match[1];
-      }
-    }
     const blockRegex = /\$\$([^$]+)\$\$/g;
     while ((match = blockRegex.exec(line)) !== null) {
       const start = match.index;
@@ -16092,10 +16094,21 @@ var MathLiveModal = class extends import_obsidian.Modal {
         return match[1];
       }
     }
+    const inlineRegex = /(?<!\$)\$(?!\$)([^$]+)\$(?!\$)/g;
+    while ((match = inlineRegex.exec(line)) !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (cursor.ch >= start && cursor.ch <= end) {
+        this.mode = "inline";
+        return match[1];
+      }
+    }
     return "";
   }
   onOpen() {
     const { contentEl, modalEl } = this;
+    fetch("http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ location: "main.ts:MathLiveModal.onOpen", message: "Modal opened", data: { mode: this.mode, initialLatex: this.initialLatex }, timestamp: Date.now(), hypothesisId: "B" }) }).catch(() => {
+    });
     modalEl.addClass("mathlive-enhanced-modal");
     contentEl.empty();
     contentEl.addClass("mathlive-enhanced-container");
@@ -16198,6 +16211,9 @@ var MathLiveModal = class extends import_obsidian.Modal {
       this.mathfield.value = this.initialLatex;
     }
     this.mathfield.addEventListener("mount", () => {
+      var _a2;
+      fetch("http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ location: "main.ts:mathfield.mount", message: "Mathfield mounted", data: { hasValue: !!((_a2 = this.mathfield) == null ? void 0 : _a2.value) }, timestamp: Date.now(), hypothesisId: "E" }) }).catch(() => {
+      });
       if (this.mathfield) {
         this.mathfield.smartMode = true;
         this.mathfield.smartFence = true;
@@ -16321,6 +16337,8 @@ var MathLiveModal = class extends import_obsidian.Modal {
     if (!this.mathfield)
       return;
     const latex = this.mathfield.value;
+    fetch("http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ location: "main.ts:insertFormula", message: "Inserting formula", data: { latex, mode: this.mode, isEdit: !!this.initialLatex }, timestamp: Date.now(), hypothesisId: "C" }) }).catch(() => {
+    });
     if (!latex.trim()) {
       new import_obsidian.Notice("Please enter a formula");
       return;
@@ -16339,6 +16357,8 @@ var MathLiveModal = class extends import_obsidian.Modal {
     this.close();
   }
   onClose() {
+    fetch("http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ location: "main.ts:onClose", message: "Modal closing", data: { mathfieldExists: !!this.mathfield }, timestamp: Date.now(), hypothesisId: "D" }) }).catch(() => {
+    });
     const { contentEl } = this;
     contentEl.empty();
     try {
@@ -16367,7 +16387,7 @@ var MathLiveEnhancedSettingTab = class extends import_obsidian.PluginSettingTab 
       this.plugin.settings.defaultMode = value;
       await this.plugin.saveSettings();
     }));
-    new import_obsidian.Setting(containerEl).setName("Show quick templates").setDesc("Display template sidebar with common formulas").addToggle((toggle) => toggle.setValue(this.plugin.settings.showQuickTemplates).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("Show quick templates").setDesc("Show additional template categories (Calculus, Linear Algebra, etc.)").addToggle((toggle) => toggle.setValue(this.plugin.settings.showQuickTemplates).onChange(async (value) => {
       this.plugin.settings.showQuickTemplates = value;
       await this.plugin.saveSettings();
     }));
