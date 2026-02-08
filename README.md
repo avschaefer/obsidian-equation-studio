@@ -58,7 +58,6 @@ This watches for changes and rebuilds automatically.
 - Press `Escape` to close the editor.
 - Click template buttons to insert common symbols.
 - Click "Show Keyboard" for the virtual math keyboard.
-- Use the three-bar menu inside the editor for additional options.
 
 ## Settings
 

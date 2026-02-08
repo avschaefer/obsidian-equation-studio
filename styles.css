@@ -200,9 +200,9 @@
     display: none;
 }
 
-/* MathLive menu toggle styling */
+/* Hide MathLive's built-in menu toggle (non-functional in modal context) */
 .mathlive-mathfield::part(menu-toggle) {
-    color: var(--ml-text-muted);
+    display: none;
 }
 
 /* Quick Templates Strip */
