@@ -16006,7 +16006,7 @@ var QUICK_TEMPLATES = {
     { label: "Iff", latex: "\\Leftrightarrow", icon: "\u21D4" }
   ],
   "Relations": [
-    { label: "Not Equal", latex: "a \\neq b", icon: "\u2260" },
+    { label: "Not Equal", latex: "\\neq", icon: "\u2260" },
     { label: "Approx", latex: "\\approx", icon: "\u2248" },
     { label: "Less/Equal", latex: "\\leq", icon: "\u2264" },
     { label: "Greater/Equal", latex: "\\geq", icon: "\u2265" },

@@ -80,7 +80,7 @@ const QUICK_TEMPLATES = {
         { label: 'Iff', latex: '\\Leftrightarrow', icon: '⇔' },
     ],
     'Relations': [
-        { label: 'Not Equal', latex: 'a \\neq b', icon: '≠' },
+        { label: 'Not Equal', latex: '\\neq', icon: '≠' },
         { label: 'Approx', latex: '\\approx', icon: '≈' },
         { label: 'Less/Equal', latex: '\\leq', icon: '≤' },
         { label: 'Greater/Equal', latex: '\\geq', icon: '≥' },
@@ -95,6 +95,10 @@ export default class MathLiveEnhancedPlugin extends Plugin {
 
     async onload() {
         await this.loadSettings();
+
+        // KaTeX fonts are loaded via @font-face in styles.css with the
+        // --ML__static-fonts CSS flag, so MathLive's JS font-loader is bypassed.
+        // No need to set MathfieldElement.fontsDirectory here.
 
         // #region agent log
         fetch('http://127.0.0.1:7242/ingest/02636bcb-fd14-4412-b9fc-f561c13e124a',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'main.ts:onload',message:'Plugin loaded',data:{settings:this.settings},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
